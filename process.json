@@ -1,0 +1,46 @@
+{
+  "id": "sample_process",
+  "start": "start_event_1",
+  "nodes": {
+    "start_event_1": {
+      "type": "startEvent",
+      "name": "Process Started",
+      "next": "script_task_1"
+    },
+    "script_task_1": {
+      "type": "scriptTask",
+      "name": "Employee Work Evaluation",
+      "script": "result = value * 2",
+      "next": "gateway_1"
+    },
+    "gateway_1": {
+      "type": "exclusiveGateway",
+      "name": "Performance Check",
+      "conditions": [
+        {"expression": "result > 50", "next": "user_task_supervisor"},
+        {"expression": "result > 10", "next": "user_task_hr"},
+        {"expression": "True", "next": "end_event_fail"}
+      ]
+    },
+    "user_task_supervisor": {"type": "userTask","name":"Supervisor Approval","next":"gateway_2"},
+    "gateway_2": {
+      "type": "exclusiveGateway",
+      "name": "Supervisor Decision",
+      "conditions": [
+        {"expression": "approval == True","next":"end_event_success"},
+        {"expression": "True","next":"end_event_fail"}
+      ]
+    },
+    "user_task_hr": {"type": "userTask","name":"HR Final Review","next":"gateway_3"},
+    "gateway_3": {
+      "type": "exclusiveGateway",
+      "name": "HR Decision",
+      "conditions": [
+        {"expression": "hr_approval == True","next":"end_event_success"},
+        {"expression": "True","next":"end_event_fail"}
+      ]
+    },
+    "end_event_success": {"type": "endEvent","name":"Process Completed Successfully"},
+    "end_event_fail": {"type": "endEvent","name":"Process Failed / Rejected"}
+  }
+}
